@@ -1,7 +1,12 @@
+// ---------------------------------------------------------------------------------------- //
+// Require Packages
+
 const userModel = require("../models/userModel");
 const jwt = require('jsonwebtoken');
 const moment = require("moment");
 
+// --------------------------------------------------------------------------------------- //
+// Validation Formatting
 
 const isValid = function (value) {
     if (typeof value === 'undefined' || value === null) return false
@@ -13,6 +18,8 @@ const isValidTitle = function (title) {
     return ['Mr', 'Mrs', "Miss"].indexOf(title) !== -1
 }
 
+// ------------------------------------------------------------------------------------------ //
+// Create User
 
 const createUser = async function (req, res) {
     try {
@@ -83,7 +90,10 @@ const createUser = async function (req, res) {
         res.status(500).send({ msg: error.message })
     }
 
-}
+};
+
+// ----------------------------------------------------------------------------------------- //
+// Login User
 
 const loginUser = async function (req, res) {
     try {
@@ -122,8 +132,10 @@ const loginUser = async function (req, res) {
         console.log(error)
         res.status(500).send({ msg: error.message })
     }
-}
+};
 
+// ----------------------------------------------------------------------------------------- //
+// Exports
 
 module.exports.createUser = createUser;
 module.exports.loginUser = loginUser;

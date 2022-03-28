@@ -1,5 +1,10 @@
+// ---------------------------------------------------------------------------------------- //
+// Require Packages
+
 const mongoose = require("mongoose");
 
+// ----------------------------------------------------------------------------------------- //
+// Create Schema
 
 const userSchema = new mongoose.Schema({
     title: {
@@ -55,5 +60,8 @@ const userSchema = new mongoose.Schema({
 }
 }, { timestamps: true })
 
+
+// ---------------------------------------------------------------------------------------- //
+// Exports
 
 module.exports = mongoose.model("User", userSchema);

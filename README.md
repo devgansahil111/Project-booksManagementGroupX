@@ -23,7 +23,7 @@
 #### Books Model
 { 
   title: {string, mandatory, unique},
-  excerpt: {string, mandatory}, 
+  excerpt: {string, mandatory},
   userId: {ObjectId, mandatory, refs to user model},
   ISBN: {string, mandatory, unique},
   category: {string, mandatory},
@@ -58,9 +58,9 @@
 #### POST /books
 - Create a book document from request body. Get userId in request body only.
 - Make sure the userId is a valid userId by checking the user exist in the users collection.
-- Return HTTP status 201 on a succesful book creation. Also return the book document. The response should be a JSON object like this
-- Create atleast 10 books for each user
-- Return HTTP status 400 for an invalid request with a response body like this
+- Return HTTP status 201 on a succesful book creation. Also return the book document. The response should be a JSON object like this.
+- Create atleast 10 books for each user.
+- Return HTTP status 400 for an invalid request with a response body like this.
 #### GET /books
 - Returns all books in the collection that aren't deleted. Return only book _id, title, excerpt, userId, category, releasedAt, reviews field. Response example here
 - Return the HTTP status 200 if any documents are found. The response structure should be like this
@@ -95,7 +95,7 @@ ISBN
 - Get review details like review, rating, reviewer's name in request body.
 - Update the related book document by increasing its review count
 - Return the updated book document with reviews data on successful operation. The response body should be in the form of JSON object like this
-- PUT /books/:bookId/review/:reviewId
+#### PUT /books/:bookId/review/:reviewId
 - Update the review - review, rating, reviewer's name.
 - Check if the bookId exists and is not deleted before updating the review. Check if the review exist before updating the review. Send an error response with appropirate status code like this if the book does not exist
 - Get review details like review, rating, reviewer's name in request body.
