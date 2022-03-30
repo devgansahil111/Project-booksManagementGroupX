@@ -6,6 +6,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const bookController = require("../controllers/bookController");
 const reviewController = require("../controllers/reviewController");
+const midd = require("../middlewares/midd");
 
 
 
@@ -19,20 +20,20 @@ router.post("/login", userController.loginUser);
 // -------------------------------------------------------------------------------------- //
 // Book API's
 
-router.post("/books", bookController.createBooks);
-router.get("/books", bookController.getBooks);
-router.get("/books/:bookId", bookController.getBooksById);
-router.put("/books/:bookId", bookController.updateBook);
-router.delete("/books/:bookId", bookController.deleteById);
+router.post("/books", midd.authorize, bookController.createBooks);
+router.get("/books", midd.auth, bookController.getBooks);
+router.get("/books/:bookId", midd.auth, bookController.getBooksById);
+router.put("/books/:bookId", midd.authorize, bookController.updateBook);
+router.delete("/books/:bookId", midd.authorize, bookController.deleteById);
 
 
 
 // --------------------------------------------------------------------------------------- //
 // Review API's
 
-router.post("/review", reviewController.createReviews);
-router.put("/review/:reviewId", reviewController.updateReviews);
-router.delete("/review/:reviewId", reviewController.deleteReviews);
+router.post("/books/:bookId/review", reviewController.createReviews);
+router.put("/books/:bookId/review/:reviewId", reviewController.updateReviews);
+router.delete("/books/:bookId/review/:reviewId", reviewController.deleteReviews);
 
 
 // --------------------------------------------------------------------------------------- //

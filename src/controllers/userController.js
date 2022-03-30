@@ -114,7 +114,7 @@ const loginUser = async function (req, res) {
         }
 
         let userDetails = await userModel.findOne({ email: email, password: password })
-        if (!userDetails) {
+        if (!isValid(userDetails)) {
             res.status(404).send({ status: false, msg: "Email & Password not matched" })
             return
         }

@@ -27,7 +27,8 @@ const isValidObjectId = function (ObjectId) {
 const createReviews = async function (req, res) {
     try {
         let data = req.body;
-        let { bookId, reviewedBy, rating } = data;
+        // let bookId = req.params.bookId;
+        let { reviewedBy, rating, reviewedAt, review, bookId } = data;
 
         if (Object.keys(data).length == 0) {
             res.status(400).send({ status: false, msg: "BAD REQUEST" })
@@ -41,29 +42,29 @@ const createReviews = async function (req, res) {
             res.status(404).send({ status: false, msg: "Invalid Book Id" })
             return
         }
-        if (isValid(reviewedBy)) {
+        if (!isValid(reviewedBy)) {
             res.status(400).send({ status: false, msg: "Reviewed by is mandatory" })
             return
         }
-        if (isValid(rating)) {
+        if (!isValid(rating)) {
             res.status(400).send({ status: false, msg: "Rating is mandatory" })
             return
         }
-        if (isValid(rating < 1 || rating > 5)) {
+        if (!isValid(rating < 1 || rating > 5)) {
             res.status(400).send({ status: false, msg: "Rating should be between 1 to 5" })
             return
         }
-        const newDate = new Date();
-        const reviewedAt = `${newDate.getFullYear()}/${newDate.getMonth()}/${newDate.getDate()}`;
-        console.log(reviewedAt);
-        data.reviewedAt = reviewedAt;
-        if (isValid(reviewedAt)) {
+        if (!isValid(reviewedAt)) {
             res.status(400).send({ status: false, msg: "ReviewedAt is mandatory" })
+            return
+        }
+        if (!isValid(review)) {
+            res.status(400).send({ status: false, msg: "Review is mandatory" })
             return
         }
         else {
             let createdReview = await reviewModel.create(data)
-            res.status(201).send({ data: createdReview })
+            res.status(201).send({ status: true, msg: "Reviews created successfully", data: createdReview })
         }
     } catch (error) {
         console.log(error);

@@ -2,6 +2,7 @@
 // Require Packages
 
 const jwt = require("jsonwebtoken");
+const bookModel = require("../models/bookModel");
 
 // --------------------------------------------------------------------------------------- //
 // Validation Formatting
@@ -16,20 +17,66 @@ const isValid = function (value){
 // Authentication 
 
 const auth = function (req, res, next) {
+  try {
+      let token = req.headers["x-api-key"]
+      if (!isValid(token)){
+          res.status(401).send({status: false, msg: "Token is required"})
+          return
+      }
+          let decodedToken = jwt.verify(token, "Project-03-Group37-BooksManagement")
+          if (!isValid(decodedToken)){
+              res.status(401).send({status: false, msg: "Token is invalid"})
+          }
+          next();
+      }
+   catch (error) {
+      console.log(error)
+      res.status(500).send({msg: error.message})
+  }
+};
+
+// -------------------------------------------------------------------------------------- //
+// Autherization
+
+
+const authorize = async function (req, res, next) {
     let token = req.headers["x-auth-token"];
+  
     if (!isValid(token)) {
-      res.send({ status: false, msg: "Token must be present" });
-      return
+        res.status(404).send({ status: false, msg: "Please pass token" });
+        return
     }
-    console.log(token);
   
     let decodedToken = jwt.verify( token, "Project-03-Group37-BooksManagement" );
-    console.log(decodedToken);
-    if ( decodedToken.userId == req.body.userId ) {
-      next();
+  
+    let bookId = req.params.bookId;
+    console.log(bookId);
+    if (!isValid(bookId)) {
+      let userId = req.body.userId;
+      console.log( userId, decodedToken.userId, "1" );
+      if ( userId == decodedToken.userId ) {
+        next();
+
+      } else {
+        res.status(401).send({ status: false, msg: "You are not authorized" });
+        return
+      }
+
     } else {
-      res.send({ status: false, msg: "Invalid Token" });
-      return
+      let bookIdPresent = await bookModel.findOne({ _id: bookId, isDeleted: false });
+      if (!isValid(bookIdPresent)) {
+        res.status(400).send({ status: false, msg: "Book id is not present" });
+        return
+      }
+  
+      console.log( bookIdPresent.userId, decodedToken.userId, "2" );
+      if (bookIdPresent.userId != decodedToken.userId) {
+        res.status(401).send({ status: false, msg: "You are not authorized" });
+        return
+
+      } else {
+        next();
+      }
     }
   };
   
@@ -38,3 +85,4 @@ const auth = function (req, res, next) {
   // Exports
   
   module.exports.auth = auth;
+  module.exports.authorize = authorize;
