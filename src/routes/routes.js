@@ -20,11 +20,11 @@ router.post("/login", userController.loginUser);
 // -------------------------------------------------------------------------------------- //
 // Book API's
 
-router.post("/books", midd.authorize, bookController.createBooks);
+router.post("/books", midd.auth, midd.authorize, bookController.createBooks);
 router.get("/books", midd.auth, bookController.getBooks);
 router.get("/books/:bookId", midd.auth, bookController.getBooksById);
-router.put("/books/:bookId", midd.authorize, bookController.updateBook);
-router.delete("/books/:bookId", midd.authorize, bookController.deleteById);
+router.put("/books/:bookId", midd.auth, midd.authorize, bookController.updateBook);
+router.delete("/books/:bookId", midd.auth, midd.authorize, bookController.deleteById);
 
 
 

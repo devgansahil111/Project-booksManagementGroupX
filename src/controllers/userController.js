@@ -25,10 +25,10 @@ const createUser = async function (req, res) {
     try {
         let data = req.body
 
-        let { title, name, phone, email, password, address } = data // Destructuring
+        let { title, name, phone, email, password, address } = data     // Destructuring
 
         if (Object.keys(data).length == 0) {
-            res.status(400).send({ status: false, msg: "BAD REQUEST" })
+            res.status(400).send({ status: false, msg: "BAD REQUEST" })  // returns array and it's a property of JS
             return
         }
         if (!isValid(name)) {
@@ -61,11 +61,11 @@ const createUser = async function (req, res) {
             return
         }
         if (password.length > 15) {
-            res.status(400).send({ status: false, msg: "Password should be less than 15 characters"})
+            res.status(400).send({ status: false, msg: "Password should be less than 15 characters" })
             return
         }
         if (password.length < 8) {
-            res.status(400).send({ status: false, msg: "Password should be more than 8 characters"})
+            res.status(400).send({ status: false, msg: "Password should be more than 8 characters" })
             return
         }
         if (!isValid(phone)) {
@@ -119,11 +119,12 @@ const loginUser = async function (req, res) {
             return
         }
         else {
-            let token = jwt.sign({ 
+            let token = jwt.sign({
                 userId: userDetails._id,
-            iat: Math.floor(Date.now() / 1000),
-            exp: Math.floor(Date.now() / 1000) + 10*60*60 
-            }, "Project-03-Group37-BooksManagement")
+                iat: Math.floor(Date.now() / 1000),
+                // exp: Math.floor(Date.now() / 1000) + 10*60*60 
+
+            }, "Project-03-Group37-BooksManagement", { expiresIn: "10h" })
             res.setHeader("x-api-key", token);
             res.status(201).send({ status: true, message: "User login successful", data: (token) })
         }

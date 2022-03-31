@@ -63,8 +63,8 @@ const createBooks = async function (req, res) {
             res.status(400).send({ status: false, msg: "subCategory is mandatory" })
             return
         }
-        if(!isValid(moment(releasedAt, "YYYY-MM-DD"))){
-            res.status(400).send({ status: false, msg: "Invalid date, month and year"})
+        if (!isValid(moment(releasedAt, "YYYY-MM-DD"))) {
+            res.status(400).send({ status: false, msg: "Invalid date, month and year" })
             return
         }
         if (!isValid(releasedAt)) {
@@ -96,19 +96,19 @@ const getBooks = async function (req, res) {
         let { userId, category, subCategory } = data;
 
         if (!isValid(userId)) {
-            res.status(400).send({ status: false, msg: "UserId not present"})
+            res.status(400).send({ status: false, msg: "UserId not present" })
             return
         }
         if (!isValidObjectId(userId)) {
-            res.status(400).send({ status: false, msg: "Invalid userId"})
+            res.status(400).send({ status: false, msg: "Invalid userId" })
             return
         }
         if (!isValid(category)) {
-            res.status(400).send({ status: false, msg: "Category not present"})
+            res.status(400).send({ status: false, msg: "Category not present" })
             return
         }
         if (!isValid(subCategory)) {
-            res.status(400).send({ status: false, msg: "SubCategory not present"})
+            res.status(400).send({ status: false, msg: "SubCategory not present" })
             return
         }
         let bookDetails = await bookModel.find({ isDeleted: false }).select({ _id: 1, excerpt: 1, title: 1, category: 1, subcategory: 1, ISBN: 1, releasedAt: 1, userId: 1 }).sort({ title: 1 });
@@ -146,16 +146,16 @@ const getBooksById = async function (req, res) {
             res.status(400).send({ status: false, msg: "There is no book with this bookId" })
             return
         }
-        const reviewData = await reviewModel.find({ $and: [{ bookId: bookId }, {isDeleted: false}] }).select({ isDeleted: 0, __v: 0, createdAt: 0, updatedAt: 0 });
+        const reviewData = await reviewModel.find({ $and: [{ bookId: bookId }, { isDeleted: false }] }).select({ isDeleted: 0, __v: 0, createdAt: 0, updatedAt: 0 });
         if (reviewData.length != 0) {
             bookData["reviewData"] = reviewData
         }
         else {
             bookData["reviewData"] = []
         }
-            res.status(200).send({ status: true, msg: "Book list", data: bookData })
-            return
-    
+        res.status(200).send({ status: true, msg: "Book list", data: bookData })
+        return
+
     } catch (error) {
         console.log(error);
         res.status(500).send({ msg: error.message });
@@ -171,60 +171,59 @@ const updateBook = async function (req, res) {
         const data = req.body;
         const { title, excerpt, releasedAt, ISBN } = data;
         const bookId = req.params.bookId;
-  
+
         let finalFilter = {}
 
         if (!isValid(bookId)) {
-                res.status(400).send({ status: false, msg: "Please provide bookId" })
-                return
+            res.status(400).send({ status: false, msg: "Please provide bookId" })
+            return
         }
         if (!isValidObjectId(bookId)) {
-                res.status(400).send({ status: false, msg: "Please provide valid bookId" })
-                return
+            res.status(400).send({ status: false, msg: "Please provide valid bookId" })
+            return
         }
         if (!isValid(data)) {
-                res.status(400).send({ status: false, msg: "Please provide input via body" })
-                return
+            res.status(400).send({ status: false, msg: "Please provide input via body" })
+            return
         }
         if (!isValid(title)) {
-                res.status(400).send({ status: false, msg: "Title should be present"})
-                return
-        }    
+            res.status(400).send({ status: false, msg: "Title should be present" })
+            return
+        }
         const isTitleAlreadyExist = await bookModel.findOne({ $and: [{ title: title }, { isDeleted: false }] });
         if (isTitleAlreadyExist) {
-                res.status(400).send({ status: false, msg: "Title Already Exists" })
-                return
+            res.status(400).send({ status: false, msg: "Title Already Exists" })
+            return
         }
-            finalFilter["title"] = title;
+        finalFilter["title"] = title;
 
         if (isValid(excerpt)) {
             finalFilter["excerpt"] = excerpt
         }
         if (isValid(releasedAt)) {
-          const dateRegex = /^\d{4}\-\d{2}\-\d{2}$/;
-  
-        if (!dateRegex.test(releasedAt)) {
-                res.status(400).send({ status: false, msg: "Put date in YYYY-MM-DD format" })
+            if (!isValid(moment(releasedAt, "YYYY-MM-DD"))) {
+                res.status(400).send({ status: false, msg: "Invalid date, month and year" })
                 return
-        }
+            }   
             finalFilter["releasedAt"] = releasedAt
         }
         if (isValid(ISBN)) {
             const isISBNAlreadyExist = await bookModel.findOne({ $and: [{ ISBN: ISBN }, { isDeleted: false }] });
-        if (isISBNAlreadyExist) {
+            if (isISBNAlreadyExist) {
                 res.status(400).send({ status: false, msg: "ISBN already exists" })
                 return
             }
             finalFilter["ISBN"] = ISBN
         }
         const updatedData = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: finalFilter }, { new: true });
-                res.status(200).send({ status: true, msg: "success", data: updatedData })
-                return
+        res.status(200).send({ status: true, msg: "Successfully updated Book Data", data: updatedData })
+        return
     } catch (err) {
-        return res.status(500).send({ status: false, message: err.message })
+        res.status(500).send({ status: false, message: err.message })
+        return
     }
-  
-  };
+
+};
 
 // -------------------------------------------------------------------------------------------- //
 // Delete Books

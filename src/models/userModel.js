@@ -35,29 +35,29 @@ const userSchema = new mongoose.Schema({
         }
     },
     email: {
-    type: String,
-    required: "Email is required",
-    unique: true,
-    validate: {
-        validator: function (email) {
-            if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-                return (true)
+        type: String,
+        required: "Email is required",
+        unique: true,
+        validate: {
+            validator: function (email) {
+                if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+                    return (true)
+                }
+                alert("You have entered an invalid email address!")
+                return (false)
             }
-            alert("You have entered an invalid email address!")
-            return (false)
         }
-    }
-},
+    },
     password: {
-    type: String,
-    required: "Password is required",
-    trim: true
-},
+        type: String,
+        required: "Password is required",
+        trim: true
+    },
     address: {
-    street: String,
-    city: String,
-    pincode: String
-}
+        street: String,
+        city: String,
+        pincode: String
+    }
 }, { timestamps: true })
 
 
